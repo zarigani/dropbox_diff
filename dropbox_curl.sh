@@ -1,8 +1,8 @@
 #!/bin/bash
 
 FILE_PATH=$1
-FILE_NAME="${FILE_PATH##*/}"
-REVISION_FILE_PATH="https://www.dropbox.com/revisions/$FILE_NAME"
+DROPBOX_PATH="${FILE_PATH##*/Dropbox/}"
+REVISION_FILE_PATH="https://www.dropbox.com/revisions/$DROPBOX_PATH"
 
 
 
