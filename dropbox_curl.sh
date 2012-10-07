@@ -45,8 +45,64 @@ if [ $RES != $REVISION_FILE_URL ]; then
 	revision_files_page
 fi
 
-echo
+# ファイルのURLを配列にして、バージョンの個数を取得する
 URLS=(`extract_file_urls`)
-echo ${URLS[@]}
-CONTENTS=`download_revision_file 1`
-echo -en $CONTENTS|diff -u - $FILE_PATH
+MAX_VERSION=${#URLS[@]}
+
+# 対話的に操作する
+while :
+do
+	# バージョンリストを表示
+  echo
+	echo '*** Version list(Top is newest) ***'
+	for (( i = $MAX_VERSION; i > 0 ; --i ))
+	do
+		echo -e "    $i: Version$i"
+	done
+  
+  # 入力待ち
+	read -p 'Select( number  [o]pen  [h]elp  [q]uit )> ' VER1 VER2
+  
+  # 入力コマンドの処理、バージョン番号を取得、入力値のエラー処理
+	if [[ $VER1 = "q" ]]; then
+		echo 'quit'
+		exit
+	elif [[ $VER1 = "o" ]]; then
+		echo 'open'
+		continue
+	elif [[ $VER1 = "h" ]]; then
+		echo 'help'
+		continue
+	elif [[ $VER1 =~ ^[0-9]*$ ]] && [[ $VER2 =~ ^[0-9]*$ ]]; then
+		if [[ -z "$VER1" ]]; then
+			VER1=$MAX_VERSION
+		fi
+		if [[ -z "$VER2" ]]; then
+			VER2=$VER1
+			VER1=`expr $VER1 - 1`
+		fi
+		if [[ $VER1 -gt 0 ]] && [[ $VER1 -le $MAX_VERSION ]] && [[ $VER2 -gt 0 ]] && [[ $VER2 -le $MAX_VERSION ]]; then
+			break
+		fi
+	fi
+	echo 'error!'
+	exit
+done
+echo "\`diff Version$VER1 Version$VER2\`"
+echo
+
+# 指定バージョンをダウンロードする
+if [[ $(($MAX_VERSION - $VER1)) = 0 ]]; then
+	CONTENTS_1=`cat $FILE_PATH`
+else
+	CONTENTS_1=`download_revision_file $VER1`
+fi
+if [[ $(($MAX_VERSION - $VER2)) = 0 ]]; then
+	CONTENTS_2=`cat $FILE_PATH`
+else
+	CONTENTS_2=`download_revision_file $VER2`
+fi
+
+# diff出力
+diff -u <(echo $CONTENTS_1) <(echo $CONTENTS_2)
+echo
