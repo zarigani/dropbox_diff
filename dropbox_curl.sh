@@ -2,7 +2,7 @@
 
 FILE_PATH=$1
 DROPBOX_PATH="${FILE_PATH##*/Dropbox/}"
-REVISION_FILE_PATH="https://www.dropbox.com/revisions/$DROPBOX_PATH"
+REVISION_FILE_URL="https://www.dropbox.com/revisions/$DROPBOX_PATH"
 
 
 
@@ -21,7 +21,7 @@ dropbox_login() {
 }
 
 revision_files_page() {
-	curl -L -w "%{url_effective}" -b login_cookie.txt -o output.html $REVISION_FILE_PATH
+	curl -L -w "%{url_effective}" -b login_cookie.txt -o output.html $REVISION_FILE_URL
 }
 
 extract_file_urls() {
@@ -37,7 +37,7 @@ download_revision_file() {
 
 # リダイレクトした時だけログインし直す
 RES=`revision_files_page`
-if [ $RES != $REVISION_FILE_PATH ]; then
+if [ $RES != $REVISION_FILE_URL ]; then
 	dropbox_login
 	revision_files_page
 fi
