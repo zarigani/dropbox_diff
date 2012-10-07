@@ -41,6 +41,18 @@ option_open() {
 	osascript -e "open location \"$REVISION_FILE_URL\""
 }
 
+# 対話的な操作のヘルプを表示する
+option_help() {
+	echo "# Example (When Version3 is newest.) :"
+	echo "#    ''      \`diff Version2 Version3\`"
+	echo "#    '3'     \`diff Version2 Version3\`"
+	echo "#    '2'     \`diff Version1 Version2\`"
+	echo "#    '1 3'   \`diff Version1 Version3\`"
+	echo "#    'o'     Open Dropbox web page."
+	echo "#    'h'     Show this help."
+	echo "#    'q'     Quit this command."
+}
+
 
 
 
@@ -77,7 +89,7 @@ do
 		option_open
 		continue
 	elif [[ $VER1 = "h" ]]; then
-		echo 'help'
+		option_help
 		continue
 	elif [[ $VER1 =~ ^[0-9]*$ ]] && [[ $VER2 =~ ^[0-9]*$ ]]; then
 		if [[ -z "$VER1" ]]; then
