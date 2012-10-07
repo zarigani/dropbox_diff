@@ -32,7 +32,7 @@ extract_file_urls() {
 
 # 指定したバージョンのファイルをダウンロードする
 download_revision_file() {
-	curl -s -b login_cookie.txt ${URLS[$1]}
+	curl -s -b login_cookie.txt ${URLS[$(($MAX_VERSION - $1))]}
 }
 
 # Dropboxのバージョン管理のWebページをブラウザで開く
