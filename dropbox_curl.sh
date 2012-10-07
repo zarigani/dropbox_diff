@@ -35,6 +35,12 @@ download_revision_file() {
 	curl -s -b login_cookie.txt ${URLS[$1]}
 }
 
+# Dropboxのバージョン管理のWebページをブラウザで開く
+option_open() {
+	echo "\`open location \"$REVISION_FILE_URL\"\`"
+	osascript -e "open location \"$REVISION_FILE_URL\""
+}
+
 
 
 
@@ -68,7 +74,7 @@ do
 		echo 'quit'
 		exit
 	elif [[ $VER1 = "o" ]]; then
-		echo 'open'
+		option_open
 		continue
 	elif [[ $VER1 = "h" ]]; then
 		echo 'help'
