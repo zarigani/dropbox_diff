@@ -6,7 +6,7 @@ REVISION_FILE_URL="https://www.dropbox.com/revisions/$DROPBOX_PATH"
 
 
 
-
+# Dropboxへログインする
 dropbox_login() {
 	read -p 'email-adress: ' EMAIL_ADRESS
 	read -s -p 'password: ' PASSWORD; echo
@@ -20,14 +20,17 @@ dropbox_login() {
 	     https://www.dropbox.com/login
 }
 
+# ファイルのバージョン管理のページを取得する
 revision_files_page() {
 	curl -L -w "%{url_effective}" -b login_cookie.txt -o output.html $REVISION_FILE_URL
 }
 
+# バージョンごとのファイルのURLを抜き出す
 extract_file_urls() {
 	cat output.html|grep -o '<a href="https://dl-web.dropbox.com/get/.*</a>'|grep -o '"https://.*"'|grep -o '[^"].*[^"]'
 }
 
+# 指定したバージョンのファイルをダウンロードする
 download_revision_file() {
 	curl -s -b login_cookie.txt ${URLS[$1]}
 }
