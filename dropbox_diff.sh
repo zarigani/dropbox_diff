@@ -4,6 +4,13 @@ FILE_PATH=$1
 DROPBOX_PATH="${FILE_PATH##*/Dropbox/}"
 REVISION_FILE_URL="https://www.dropbox.com/revisions/$DROPBOX_PATH"
 
+if [ -n $TMPDIR ]; then
+  [ -d "${TMPDIR}com.bebekoubou.dropbox_diff" ] || mkdir "${TMPDIR}com.bebekoubou.dropbox_diff"
+  COOKIE_PATH="${TMPDIR}com.bebekoubou.dropbox_diff/cookie"
+else
+  COOKIE_PATH="${HOME}/.com.bebekoubou.dropbox_diff.cookie"
+fi
+
 
 
 # Dropboxへログインする
@@ -11,18 +18,19 @@ dropbox_login() {
 	read -p 'email-adress: ' EMAIL_ADRESS
 	read -s -p 'password: ' PASSWORD; echo
 	
-	curl -L -c cookie.txt -o output.html https://www.dropbox.com/login
+	curl -L -c $COOKIE_PATH -o output.html https://www.dropbox.com/login
 	TOKEN=`cat output.html | grep -e '<input type="hidden" name="t" value=".*" />' | grep -o 'value=".*"' | grep -o '".*"' | grep -o '[^"].*[^"]'`
-	curl -L -b cookie.txt -c login_cookie.txt -o output.html \
+	curl -L -b $COOKIE_PATH -c $COOKIE_PATH -o output.html \
 	     --data-urlencode "t=$TOKEN" \
 	     --data-urlencode "login_email=$EMAIL_ADRESS" \
 	     --data-urlencode "login_password=$PASSWORD" \
 	     https://www.dropbox.com/login
+  chmod 600 $COOKIE_PATH
 }
 
 # ファイルのバージョン管理のページを取得する
 revision_files_page() {
-	curl -L -w "%{url_effective}" -b login_cookie.txt -o output.html $REVISION_FILE_URL
+	curl -L -w "%{url_effective}" -b $COOKIE_PATH -o output.html $REVISION_FILE_URL
 }
 
 # バージョンごとのファイルのURLを抜き出す
@@ -32,7 +40,7 @@ extract_file_urls() {
 
 # 指定したバージョンのファイルをダウンロードする
 download_revision_file() {
-	curl -s -b login_cookie.txt ${URLS[$(($MAX_VERSION - $1))]}
+	curl -s -b $COOKIE_PATH ${URLS[$(($MAX_VERSION - $1))]}
 }
 
 # Dropboxのバージョン管理のWebページをブラウザで開く
