@@ -15,6 +15,7 @@ fi
 
 
 
+
 # Dropboxへログインする
 dropbox_login() {
 	read -p 'email-adress: ' EMAIL_ADRESS
@@ -66,12 +67,13 @@ option_help() {
 
 
 
-# リダイレクトした時だけログインし直す
-RES=`revision_files_page`
-if [ $RES != $REVISION_FILE_URL ]; then
-	dropbox_login
-	revision_files_page
-fi
+# リダイレクトした時だけログインし直す（3回試行）
+for i in `seq 1 4`
+do
+  [ `revision_files_page` = $REVISION_FILE_URL ] && break
+  [ $i = 4 ] && exit
+  dropbox_login
+done
 
 # ファイルのURLを配列にして、バージョンの個数を取得する
 URLS=(`extract_file_urls`)
