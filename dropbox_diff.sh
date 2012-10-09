@@ -48,6 +48,14 @@ download_revision_file() {
 	curl -s -b $COOKIE_PATH -o "$2" ${URLS[$(($MAX_VERSION - $1))]}
 }
 
+pre_command() {
+  case "$FILE_PATH" in
+    *.scpt )  echo 'osadecompile' ;;
+    *.rtf )   echo 'textutil -convert txt -stdout' ;;
+    * )       echo 'cat' ;;
+  esac
+}
+
 # Dropboxのバージョン管理のWebページをブラウザで開く
 option_open() {
 	echo "\`open location \"$REVISION_FILE_URL\"\`"
@@ -138,5 +146,5 @@ else
 fi
 
 # diff出力
-diff -u "$CONTENTS_1" "$CONTENTS_2"
+diff -u <(`pre_command` "$CONTENTS_1") <(`pre_command` "$CONTENTS_2")
 echo
