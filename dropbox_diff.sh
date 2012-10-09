@@ -57,11 +57,11 @@ pre_command() {
 }
 
 urlencode() {
-  echo $* | nkf -eMQ | tr = %
+  ruby -r cgi -e "puts CGI.escape('$1')"
 }
 
 urldecode() {
-  echo $* | tr % = | nkf -emQ
+  ruby -r cgi -e "puts CGI.unescape('$1')"
 }
 
 # Dropboxのバージョン管理のWebページをブラウザで開く
