@@ -8,9 +8,11 @@ if [ -n $TMPDIR ]; then
   [ -d "${TMPDIR}com.bebekoubou.dropbox_diff" ] || mkdir "${TMPDIR}com.bebekoubou.dropbox_diff"
   COOKIE_PATH="${TMPDIR}com.bebekoubou.dropbox_diff/cookie"
   OUTPUT_PATH="${TMPDIR}com.bebekoubou.dropbox_diff/output"
+  CONTENTS_PATH="${TMPDIR}com.bebekoubou.dropbox_diff/contents_"
 else
   COOKIE_PATH="${HOME}/.com.bebekoubou.dropbox_diff.cookie"
   OUTPUT_PATH="${HOME}/.com.bebekoubou.dropbox_diff.output"
+  CONTENTS_PATH="${HOME}/.com.bebekoubou.dropbox_diff.contents_"
 fi
 
 
@@ -43,7 +45,7 @@ extract_file_urls() {
 
 # 指定したバージョンのファイルをダウンロードする
 download_revision_file() {
-	curl -s -b $COOKIE_PATH ${URLS[$(($MAX_VERSION - $1))]}
+	curl -s -b $COOKIE_PATH -o "$2" ${URLS[$(($MAX_VERSION - $1))]}
 }
 
 # Dropboxのバージョン管理のWebページをブラウザで開く
@@ -123,16 +125,18 @@ echo
 
 # 指定バージョンをダウンロードする
 if [[ $(($MAX_VERSION - $VER1)) = 0 ]]; then
-	CONTENTS_1=`cat $FILE_PATH`
+	CONTENTS_1="$FILE_PATH"
 else
-	CONTENTS_1=`download_revision_file $VER1`
+	CONTENTS_1="${CONTENTS_PATH}1"
+  download_revision_file $VER1 $CONTENTS_1
 fi
 if [[ $(($MAX_VERSION - $VER2)) = 0 ]]; then
-	CONTENTS_2=`cat $FILE_PATH`
+	CONTENTS_2="$FILE_PATH"
 else
-	CONTENTS_2=`download_revision_file $VER2`
+	CONTENTS_2="${CONTENTS_PATH}2"
+  download_revision_file $VER2 $CONTENTS_2
 fi
 
 # diff出力
-diff -u <(echo "$CONTENTS_1") <(echo "$CONTENTS_2")
+diff -u "$CONTENTS_1" "$CONTENTS_2"
 echo
