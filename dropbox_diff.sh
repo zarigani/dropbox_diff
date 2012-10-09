@@ -5,29 +5,29 @@ dropbox_login() {
 	read -p 'email-adress: ' EMAIL_ADRESS
 	read -s -p 'password: ' PASSWORD; echo
 	
-	curl -L -c $COOKIE_PATH -o $OUTPUT_PATH https://www.dropbox.com/login
-	TOKEN=`cat $OUTPUT_PATH | grep -e '<input type="hidden" name="t" value=".*" />' | grep -o 'value=".*"' | grep -o '".*"' | grep -o '[^"].*[^"]'`
-	curl -L -b $COOKIE_PATH -c $COOKIE_PATH \
+	curl -L -c "$COOKIE_PATH" -o "$OUTPUT_PATH" https://www.dropbox.com/login
+	TOKEN=`cat "$OUTPUT_PATH" | grep -e '<input type="hidden" name="t" value=".*" />' | grep -o 'value=".*"' | grep -o '".*"' | grep -o '[^"].*[^"]'`
+	curl -L -b "$COOKIE_PATH" -c "$COOKIE_PATH" \
 	     --data-urlencode "t=$TOKEN" \
 	     --data-urlencode "login_email=$EMAIL_ADRESS" \
 	     --data-urlencode "login_password=$PASSWORD" \
 	     https://www.dropbox.com/login > /dev/null
-  chmod 600 $COOKIE_PATH $OUTPUT_PATH
+  chmod 600 "$COOKIE_PATH" "$OUTPUT_PATH"
 }
 
 # ファイルのバージョン管理のページを取得する
 revision_files_page() {
-	curl -L -w "%{url_effective}" -b $COOKIE_PATH -o $OUTPUT_PATH $REVISION_FILE_URL
+	curl -L -w "%{url_effective}" -b "$COOKIE_PATH" -o "$OUTPUT_PATH" "$REVISION_FILE_URL"
 }
 
 # バージョンごとのファイルのURLを抜き出す
 extract_file_urls() {
-	cat $OUTPUT_PATH|grep -o '<a href="https://dl-web.dropbox.com/get/.*</a>'|grep -o '"https://.*"'|grep -o '[^"].*[^"]'
+	cat "$OUTPUT_PATH"|grep -o '<a href="https://dl-web.dropbox.com/get/.*</a>'|grep -o '"https://.*"'|grep -o '[^"].*[^"]'
 }
 
 # 指定したバージョンのファイルをダウンロードする
 download_revision_file() {
-	curl -s -b $COOKIE_PATH -o "$2" ${URLS[$(($MAX_VERSION - $1))]}
+	curl -s -b "$COOKIE_PATH" -o "$2" "${URLS[$(($MAX_VERSION - $1))]}"
 }
 
 # 特定のバイナリファイルをテキスト変換する
@@ -70,9 +70,10 @@ option_help() {
 
 
 
-FILE_PATH=$1
+FILE_PATH="$1"
 DROPBOX_PATH="${FILE_PATH##*/Dropbox/}"
 REVISION_FILE_URL="https://www.dropbox.com/revisions/$DROPBOX_PATH"
+echo "$REVISION_FILE_URL\n"
 
 # $TMPDIRを利用できる環境かどうか判定して、作業ファイルの保存場所を設定する
 if [ -n $TMPDIR ]; then
