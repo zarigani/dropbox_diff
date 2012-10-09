@@ -88,6 +88,8 @@ done
 # ファイルのURLを配列にして、バージョンの個数を取得する
 URLS=(`extract_file_urls`)
 MAX_VERSION=${#URLS[@]}
+[ $MAX_VERSION = 0 ] && echo 'Dropbox is busy. Try [o]pen.'
+[ $MAX_VERSION = 1 ] && echo 'Version is only one.' && exit
 
 # 対話的に操作する
 while :
