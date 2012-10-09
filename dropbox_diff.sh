@@ -134,5 +134,5 @@ else
 fi
 
 # diff出力
-diff -u <(echo $CONTENTS_1) <(echo $CONTENTS_2)
+diff -u <(echo "$CONTENTS_1") <(echo "$CONTENTS_2")
 echo
