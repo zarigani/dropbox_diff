@@ -56,6 +56,14 @@ pre_command() {
   esac
 }
 
+urlencode() {
+  echo $* | nkf -eMQ | tr = %
+}
+
+urldecode() {
+  echo $* | tr % = | nkf -emQ
+}
+
 # Dropboxのバージョン管理のWebページをブラウザで開く
 option_open() {
 	echo "\`open location \"$REVISION_FILE_URL\"\`"
