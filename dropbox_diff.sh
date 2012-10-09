@@ -59,7 +59,7 @@ pre_command() {
 # Dropboxのバージョン管理のWebページをブラウザで開く
 option_open() {
 	echo "\`open location \"$REVISION_FILE_URL\"\`"
-	osascript -e "open location \"$REVISION_FILE_URL\""
+	open "$REVISION_FILE_URL"
 }
 
 # 対話的な操作のヘルプを表示する
