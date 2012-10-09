@@ -30,6 +30,7 @@ download_revision_file() {
 	curl -s -b $COOKIE_PATH -o "$2" ${URLS[$(($MAX_VERSION - $1))]}
 }
 
+# 特定のバイナリファイルをテキスト変換する
 pre_command() {
   case "$FILE_PATH" in
     *.scpt )  echo 'osadecompile' ;;
@@ -38,10 +39,12 @@ pre_command() {
   esac
 }
 
+# URLエンコード
 urlencode() {
   ruby -r cgi -e "puts CGI.escape('$1')"
 }
 
+# URLデコード
 urldecode() {
   ruby -r cgi -e "puts CGI.unescape('$1')"
 }
@@ -70,8 +73,8 @@ option_help() {
 FILE_PATH=$1
 DROPBOX_PATH="${FILE_PATH##*/Dropbox/}"
 REVISION_FILE_URL="https://www.dropbox.com/revisions/$DROPBOX_PATH"
-echo "$REVISION_FILE_URL"
 
+# $TMPDIRを利用できる環境かどうか判定して、作業ファイルの保存場所を設定する
 if [ -n $TMPDIR ]; then
   [ -d "${TMPDIR}com.bebekoubou.dropbox_diff" ] || mkdir "${TMPDIR}com.bebekoubou.dropbox_diff"
   COOKIE_PATH="${TMPDIR}com.bebekoubou.dropbox_diff/cookie"
