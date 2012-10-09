@@ -1,23 +1,5 @@
 #!/bin/bash
 
-FILE_PATH=$1
-DROPBOX_PATH="${FILE_PATH##*/Dropbox/}"
-REVISION_FILE_URL="https://www.dropbox.com/revisions/$DROPBOX_PATH"
-
-if [ -n $TMPDIR ]; then
-  [ -d "${TMPDIR}com.bebekoubou.dropbox_diff" ] || mkdir "${TMPDIR}com.bebekoubou.dropbox_diff"
-  COOKIE_PATH="${TMPDIR}com.bebekoubou.dropbox_diff/cookie"
-  OUTPUT_PATH="${TMPDIR}com.bebekoubou.dropbox_diff/output"
-  CONTENTS_PATH="${TMPDIR}com.bebekoubou.dropbox_diff/contents_"
-else
-  COOKIE_PATH="${HOME}/.com.bebekoubou.dropbox_diff.cookie"
-  OUTPUT_PATH="${HOME}/.com.bebekoubou.dropbox_diff.output"
-  CONTENTS_PATH="${HOME}/.com.bebekoubou.dropbox_diff.contents_"
-fi
-
-
-
-
 # Dropboxへログインする
 dropbox_login() {
 	read -p 'email-adress: ' EMAIL_ADRESS
@@ -84,6 +66,22 @@ option_help() {
 
 
 
+
+FILE_PATH=$1
+DROPBOX_PATH="${FILE_PATH##*/Dropbox/}"
+REVISION_FILE_URL="https://www.dropbox.com/revisions/$DROPBOX_PATH"
+echo "$REVISION_FILE_URL"
+
+if [ -n $TMPDIR ]; then
+  [ -d "${TMPDIR}com.bebekoubou.dropbox_diff" ] || mkdir "${TMPDIR}com.bebekoubou.dropbox_diff"
+  COOKIE_PATH="${TMPDIR}com.bebekoubou.dropbox_diff/cookie"
+  OUTPUT_PATH="${TMPDIR}com.bebekoubou.dropbox_diff/output"
+  CONTENTS_PATH="${TMPDIR}com.bebekoubou.dropbox_diff/contents_"
+else
+  COOKIE_PATH="${HOME}/.com.bebekoubou.dropbox_diff.cookie"
+  OUTPUT_PATH="${HOME}/.com.bebekoubou.dropbox_diff.output"
+  CONTENTS_PATH="${HOME}/.com.bebekoubou.dropbox_diff.contents_"
+fi
 
 # リダイレクトした時だけログインし直す（3回試行）
 for i in `seq 1 4`
