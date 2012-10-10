@@ -155,7 +155,7 @@ do
 	echo 'error!'
 	exit
 done
-echo "\`diff Version$VER1 Version$VER2\`"
+echo "\`diff $VER1 $VER2\`"
 echo
 
 # 指定バージョンをダウンロードする
