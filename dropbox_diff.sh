@@ -27,6 +27,16 @@ extract_file_urls() {
 	cat "$OUTPUT_PATH"|grep -o '<a href="https://dl-web.dropbox.com/get/.*</a>'|grep -o '"https://.*"'|grep -o '[^"].*[^"]'
 }
 
+# バージョンリストを抜き出す
+extract_version_strs() {
+  cat "$OUTPUT_PATH"|grep -o '<a href="https://dl-web.dropbox.com/get/.*</a>'|grep -o '>.*<'|grep -o '[^>].*[^<]'
+}
+
+# バージョン番号のみ抜き出す
+extract_version_nums() {
+  cat "$OUTPUT_PATH"|grep -o '<a href="https://dl-web.dropbox.com/get/.*</a>'|grep -o '[0-9][0-9]*</a>'|grep -o '[0-9][0-9]*'
+}
+
 # 指定したバージョンのファイルをダウンロードする
 download_revision_file() {
 	echo "\`download \"${URLS[$(($MAX_VERSION - $1))]}\"\`"
@@ -100,7 +110,8 @@ done
 
 # ファイルのURLを配列にして、バージョンの個数を取得する
 URLS=(`extract_file_urls`)
-MAX_VERSION=${#URLS[@]}
+VERSION_NUMS=(`extract_version_nums`)
+MAX_VERSION=$VERSION_NUMS
 
 # 対話的に操作する
 while :
@@ -110,10 +121,7 @@ do
 	echo '*** Version list(Top is newest) ***'
   [ $MAX_VERSION = 0 ] && echo 'Dropbox is busy. Try [o]pen.'
   [ $MAX_VERSION = 1 ] && echo 'Version is only one.' && exit
-	for (( i = $MAX_VERSION; i > 0 ; --i ))
-	do
-		echo -e "    $i: Version$i"
-	done
+  echo "`extract_version_strs`"
   
   # 入力待ち
 	read -p 'Select( number  [o]pen  [h]elp  [q]uit )> ' VER1 VER2
