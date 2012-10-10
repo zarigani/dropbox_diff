@@ -5,10 +5,10 @@ dropbox_login() {
 	read -p 'email-adress: ' EMAIL_ADRESS
 	read -s -p 'password: ' PASSWORD; echo
 	
-	echo "\`GET \"https://www.dropbox.com/login\"\`"
+	echo "\`GET https://www.dropbox.com/login\`"
 	curl -s -L -c "$COOKIE_PATH" -o "$OUTPUT_PATH" https://www.dropbox.com/login
 	TOKEN=`cat "$OUTPUT_PATH" | grep -e '<input type="hidden" name="t" value=".*" />' | grep -o 'value=".*"' | grep -o '".*"' | grep -o '[^"].*[^"]'`
-	echo "\`PUT \"https://www.dropbox.com/login\"\`"
+	echo "\`PUT https://www.dropbox.com/login\`"
 	curl -s -L -b "$COOKIE_PATH" -c "$COOKIE_PATH" \
 	     --data-urlencode "t=$TOKEN" \
 	     --data-urlencode "login_email=$EMAIL_ADRESS" \
@@ -39,7 +39,7 @@ extract_version_nums() {
 
 # 指定したバージョンのファイルをダウンロードする
 download_revision_file() {
-	echo "\`download \"${URLS[$(($MAX_VERSION - $1))]}\"\`"
+	echo "\`download ${URLS[$(($MAX_VERSION - $1))]}\`"
 	curl -s -b "$COOKIE_PATH" -o "$2" "${URLS[$(($MAX_VERSION - $1))]}"
 }
 
@@ -102,7 +102,7 @@ fi
 # リダイレクトした時だけログインし直す（3回試行）
 for i in `seq 1 4`
 do
-	echo "\`GET \"$REVISION_FILE_URL\"\`"
+	echo "\`GET $REVISION_FILE_URL\`"
   [ `revision_files_page` = $REVISION_FILE_URL ] && break
   [ $i = 4 ] && exit
   dropbox_login
