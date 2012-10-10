@@ -62,6 +62,16 @@ urldecode() {
   ruby -r cgi -e "puts CGI.unescape('$1')"
 }
 
+# NFD(MAC) -> NFC変換（UTF8MAC問題対策）
+mac_to_utf8() {
+  echo -n "$1"|iconv -f UTF-8-MAC -t UTF-8
+}
+
+# NFC -> NFD(MAC)変換（UTF8MAC問題対策）
+utf8_to_mac() {
+  echo -n "$1"|iconv -f UTF-8 -t UTF-8-MAC
+}
+
 # Dropboxのバージョン管理のWebページをブラウザで開く
 option_open() {
 	echo "\`open \"$REVISION_FILE_URL\"\`"
@@ -85,7 +95,7 @@ option_help() {
 
 FILE_PATH="$1"
 DROPBOX_PATH="${FILE_PATH##*/Dropbox/}"
-REVISION_FILE_URL="https://www.dropbox.com/revisions/$DROPBOX_PATH"
+REVISION_FILE_URL=`mac_to_utf8 "https://www.dropbox.com/revisions/$DROPBOX_PATH"`
 
 # $TMPDIRを利用できる環境かどうか判定して、作業ファイルの保存場所を設定する
 if [ -n $TMPDIR ]; then
