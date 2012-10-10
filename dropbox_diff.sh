@@ -119,9 +119,13 @@ do
 	# バージョンリストを表示
   echo
 	echo '*** Version list(Top is newest) ***'
-  [ $MAX_VERSION = 0 ] && echo 'Dropbox is busy. Try [o]pen.'
-  [ $MAX_VERSION = 1 ] && echo 'Version is only one.' && exit
   echo "`extract_version_strs`"
+  
+  # バージョン履歴が1以下の場合
+  case "$MAX_VERSION" in
+    "") echo 'Version don`t exist. Try [o]pen Web page.';;
+    1)  echo 'Version is only one.'; exit ;;
+  esac
   
   # 入力待ち
 	read -p 'Select( number  [o]pen  [h]elp  [q]uit )> ' VER1 VER2
