@@ -183,5 +183,5 @@ else
 fi
 
 # diff出力
-diff -u <(`pre_command` "$CONTENTS_1") <(`pre_command` "$CONTENTS_2")
+diff -u <(`pre_command` "$CONTENTS_1") <(`pre_command` "$CONTENTS_2")|(`which colordiff` || `which cat`)
 echo
